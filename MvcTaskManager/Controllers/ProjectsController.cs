@@ -25,6 +25,44 @@ namespace MvcTaskManager.Controllers
             db.SaveChanges();
             return project;
         }
+
+        [HttpPut]
+        [Route("api/projects")]
+        public Project Put([FromBody] Project project)
+        {
+            TaskManagerDbContext db = new TaskManagerDbContext();
+            Project existingProject = db.Projects.Where(temp => temp.ProjectID == project.ProjectID).FirstOrDefault();
+            if (existingProject != null)
+            {
+                existingProject.ProjectName = project.ProjectName;
+                existingProject.DateOfStart = project.DateOfStart;
+                existingProject.TeamSize = project.TeamSize;
+                db.SaveChanges();
+                return existingProject;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        [HttpDelete]
+        [Route("api/projects")]
+        public int Delete(int ProjectID)
+        {
+            TaskManagerDbContext db = new TaskManagerDbContext();
+            Project existingProject = db.Projects.Where(temp => temp.ProjectID == ProjectID).FirstOrDefault();
+            if (existingProject != null)
+            {
+                db.Projects.Remove(existingProject);
+                db.SaveChanges();
+                return ProjectID;
+            }
+            else
+            {
+                return -1;
+            }
+        }
     }
 }
 
